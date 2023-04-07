@@ -1,5 +1,5 @@
 #!/bin/bash
-mkfs.vfar /dev/nvme0n1p1
+mkfs.vfat /dev/nvme0n1p1
 mkfs.btrfs -f /dev/mapper/cryptdisk
 mount /dev/mapper/cryptdisk /mnt
 btrfs subvolume create /mnt/@
