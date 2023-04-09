@@ -12,6 +12,7 @@ mount /dev/mapper/root-root /mnt
 mkdir /mnt/boot
 mount /dev/nvme0n1p1 /mnt/boot
 swapon /dev/mapper/root-swap
+pacman -Sy archlinux-keyring
 pacstrap -i /mnt base base-devel linux linux-headers linux-firmware dhcpcd networkmanager mesa-demos btrfs-progs sudo p7zip git vim xorg net-tools iproute2 lvm2
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
