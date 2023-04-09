@@ -1,13 +1,17 @@
 #!/bin/bash
 echo "Make 2 partition first for boot and second for root."
 read Yes
-mkfs.vfat /dev/nvme0n1p1
-mkfs.btrfs -f /dev/mapper/cryptdisk
-mount /dev/mapper/cryptdisk /mnt
-umount -R /mnt
+pvcreate /dev/mapper/cryptdisk
+vgcreate root /dev/mapper/cryptdisk
+lvcreate -L 20G root -n swap
+lvcreate -l 100%FREE root -n root
+mkfs.fat -F32 /dev/nvme0n1p1
+mkswap /dev/mapper/root-swap
+mkfs.btrfs -f /dev/mapper/root-root
+mount /dev/mapper/root-root /mnt
 mkdir /mnt/boot
-mkdir /mnt/home
 mount /dev/nvme0n1p1 /mnt/boot
-pacstrap /mnt base base-devel linux linux-headers linux-firmware dhcpcd networkmanager mesa-demos btrfs-progs sudo p7zip git vim xorg net-tools iproute2
+swapon /dev/mapper/root-swap
+pacstrap /mnt base base-devel linux linux-headers linux-firmware dhcpcd networkmanager mesa-demos btrfs-progs sudo p7zip git vim xorg net-tools iproute2 lvm2
 genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
